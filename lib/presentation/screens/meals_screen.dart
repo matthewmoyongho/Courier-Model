@@ -18,9 +18,24 @@ class MealsScreen extends StatefulWidget {
 }
 
 class _MealsScreenState extends State<MealsScreen> {
+  // late StreamSubscription internetConnectionChecker;
+  // bool connected = false;
   @override
   void initState() {
     super.initState();
+    // internetConnectionChecker =
+    //     InternetConnectionChecker().onStatusChange.listen((status) {
+    //   final connected = status == InternetConnectionStatus.connected;
+    //   setState(() {
+    //     this.connected = connected;
+    //     internetConnectionChecker.cancel();
+    //   });
+    // });
+    // if (connected) {
+    //   context.read<MealsBloc>().add(
+    //         LoadMeals(widget.category),
+    //       );
+    // }
     context.read<MealsBloc>().add(
           LoadMeals(widget.category),
         );
@@ -35,7 +50,7 @@ class _MealsScreenState extends State<MealsScreen> {
           children: [
             Icon(Icons.restaurant_menu),
             Text(
-              'Meal List',
+              widget.category,
               style: GoogleFonts.nunito(),
             ),
           ],
@@ -48,7 +63,7 @@ class _MealsScreenState extends State<MealsScreen> {
       body: BlocBuilder<MealsBloc, MealsState>(
         builder: (context, state) {
           if (state is MealsLoading) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (state is MealsLoaded) {
@@ -85,7 +100,7 @@ class _MealsScreenState extends State<MealsScreen> {
                                       children: [
                                         const Expanded(child: SizedBox()),
                                         Text(
-                                          state.meals[index].name,
+                                          meals[index].name,
                                           textAlign: TextAlign.center,
                                           style: GoogleFonts.nunito(
                                             fontWeight: FontWeight.w700,
@@ -111,7 +126,6 @@ class _MealsScreenState extends State<MealsScreen> {
                         padding: const EdgeInsets.all(8.0),
                         child: InkWell(
                           onTap: () {
-                            // print(state.meals[index].area);
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => MealDetail(

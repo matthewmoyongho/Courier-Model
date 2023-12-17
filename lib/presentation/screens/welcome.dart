@@ -16,7 +16,7 @@ class Welcome extends StatefulWidget {
 }
 
 class _WelcomeState extends State<Welcome> {
-  int navIndex = 1;
+  int navIndex = 2;
 
   List<Widget> screens = [
     Wallet(),

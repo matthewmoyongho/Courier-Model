@@ -29,7 +29,7 @@ class CategoryRepository {
 
         return categories;
       } else {
-        throw Exception('Error fetching meal: ${response.statusCode}');
+        return categories;
       }
     } on Exception catch (error) {
       categories = Hive.box('category').get('categories');

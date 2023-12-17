@@ -33,20 +33,20 @@ class MealsRepository {
         meals.addAll(toAdd);
         return meals;
       } else {
-        meals = [];
-        throw Exception('Error fetching meal: ${response.statusCode}');
+        return null;
       }
     } on Exception catch (error) {
       meals = Hive.box('your_box_name').get('meals');
-      return meals;
+      return null;
     }
   }
 
-  Future<Meal?> fetchMeal(String id) async {
+  Future<Meal?> fetchMealOnline(String id) async {
     Meal? meal;
     try {
       final response = await http.get(Uri.parse(
           'https://www.themealdb.com/api/json/v1/1/lookup.php?i=$id'));
+
       if (response.statusCode == 200) {
         final jsonResponse = convert.jsonDecode(response.body);
         meal = Meal(
@@ -59,11 +59,16 @@ class MealsRepository {
 
         return meal;
       } else {
-        meal = _mealsBox.get(id)!;
-        throw Exception('Error fetching meal: ${response.statusCode}');
+        return null;
       }
     } on Exception catch (error) {
       return null;
     }
+  }
+
+  Future<Meal?> fetchMealFromBox(String id) async {
+    Meal? meal;
+    meal = _mealsBox.get(id);
+    return meal;
   }
 }

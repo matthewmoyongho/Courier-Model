@@ -1,9 +1,9 @@
+import 'package:courier_app/domain/blocs/meals/meals_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../domain/blocs/meals/meals_bloc.dart';
-import '../../domain/blocs/meals/meals_event.dart';
 import '../../domain/blocs/meals/meals_state.dart';
 
 class MealDetail extends StatefulWidget {
@@ -15,9 +15,25 @@ class MealDetail extends StatefulWidget {
 }
 
 class _MealDetailState extends State<MealDetail> {
+  // late StreamSubscription internetConnectionChecker;
+  // bool connected = false;
+
   @override
   void initState() {
     super.initState();
+    // internetConnectionChecker =
+    //     InternetConnectionChecker().onStatusChange.listen((status) {
+    //   final connected = status == InternetConnectionStatus.connected;
+    //   setState(() {
+    //     this.connected = connected;
+    //     internetConnectionChecker.cancel();
+    //   });
+    // });
+    // if (connected) {
+    //   context.read<MealsBloc>().add(LoadMealOnline(widget.id));
+    // } else {
+    //   context.read<MealsBloc>().add(LoadMealFromBox(widget.id));
+    // }
     context.read<MealsBloc>().add(LoadMeal(widget.id));
   }
 
@@ -57,6 +73,7 @@ class _MealDetailState extends State<MealDetail> {
                       image: DecorationImage(
                           image: NetworkImage(state.meal!.thumbnail),
                           fit: BoxFit.cover)),
+                  alignment: Alignment.center,
                 ),
                 Expanded(
                     child: Container(
@@ -84,7 +101,7 @@ class _MealDetailState extends State<MealDetail> {
                                 color: Colors.yellow),
                             padding: EdgeInsets.all(10),
                             child: Text(
-                              'Categor - ${state.meal!.category}',
+                              'Category - ${state.meal!.category}',
                               style: GoogleFonts.nunito(
                                   fontSize: 14, fontWeight: FontWeight.w700),
                             ),

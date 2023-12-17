@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:courier_app/data/models/meal.dart';
 import 'package:courier_app/data/repository/meals_repository.dart';
 
@@ -14,19 +15,29 @@ class MealsBloc extends Bloc<MealsEvent, MealsState> {
   void _loadMeals(LoadMeals event, Emitter<MealsState> emit) async {
     _repository = MealsRepository();
     emit(MealsLoading());
-    List<Meal> categories = [];
+    List<Meal> meals = [];
+    var connectivity = await Connectivity().checkConnectivity();
+    if (connectivity == ConnectivityResult.wifi ||
+        connectivity == ConnectivityResult.mobile) {
+      meals.addAll(await _repository.fetchMeals(event.meals) ?? []);
+    } else {
+      meals = [];
+    }
 
-    categories.addAll(await _repository.fetchMeals(event.category) ?? []);
-
-    emit(MealsLoaded(meals: categories));
+    emit(MealsLoaded(meals: meals));
   }
 
   void _loadMeal(LoadMeal event, Emitter<MealsState> emit) async {
     _repository = MealsRepository();
     emit(MealsLoading());
     Meal? meal;
-    meal = await _repository.fetchMeal(event.id);
-
+    var connectivity = await Connectivity().checkConnectivity();
+    if (connectivity == ConnectivityResult.wifi ||
+        connectivity == ConnectivityResult.mobile) {
+      meal = await _repository.fetchMealOnline(event.id);
+    } else {
+      await _repository.fetchMealFromBox(event.id);
+    }
     emit(MealsLoaded(meals: state.meals, meal: meal));
   }
 }
